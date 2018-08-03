@@ -29,17 +29,34 @@ The following instructions will get access to the server instance as a user with
 > Changed ssh port from 22 to 2200.
 
     $ sudo nano /etc/ssh/sshd_config
-    Change port
-    Change PasswordAuthentication:
+    
+    - Change port from 22 to 2200
+    
+    - Change PasswordAuthentication:
         PasswordAuthentication no
-    Change PermitRootLogin to:
+        
+    - Change PermitRootLogin to:
         PermitRootLogin no
-    At the end of the file, add:
+        
+    - At the end of the file, add:
         AllowUsers grader  
+        
     $ sudo service ssh restart
 
+> Configure local timezone
 
-* Set Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (2200), HTTP (80) and NTP (123).
+    $ sudo dpkg-reconfigure tzdat
+    
+    Select 'None of the above', then select 'UTC'
+
+> Set Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (2200), HTTP (80) and NTP (123).
+
+    $ sudo ufw default deny incoming
+    $ sudo ufw default allow outgoing
+    $ sudo ufw default allow 2200/tcp
+    $ sudo ufw default allow 80/tcp
+    $ sudo ufw default allow 123/udp
+    $ sudo ufw enable
 
 > Created user *grader* with super user permissions.
 
@@ -48,13 +65,14 @@ The following instructions will get access to the server instance as a user with
 
 > Generated SSH key pair for the newly created *grader*
 
-    Login into grader account:
+    - Login into grader account:
         $ sudo su - grader
+        
     Make sure you are at the /home/grader
         $ mkdir .ssh
         $ touch .ssh/authorized_keys
     
-    - Local machine
+    - Local machine:
         $ ssh-keygen
         Follow the steps and copy the content of your created <file>.pub
         
@@ -64,18 +82,29 @@ The following instructions will get access to the server instance as a user with
         $ chmod 644 .ssh/authorized_keys
         $ sudo service ssh restart
     
-* Installed Apache
-
-* Installed PostgreSQL
-
-* Installed Git
-
 ### Summary of installed softwares
+
+> Installed Apache
+
+    $ sudo apt-get install apache2
+
+> Installed PostgreSQL
+
+    $ sudo apt-get install postgresql
+    $ sudo apt-get install postgresql-contrig
+
+> Installed Git
+
+    $ sudo apt-get install git
+    
+> Other installations
+
+    $ sudo apt-get install python-pip
+    $ sudo apt-get install python-psycopg2
+    $ sudo pip install virtualenv
 
 > Packages installed with pip
 
-    $ pip install <package>
-    
 ```
 certifi==2018.4.16
 chardet==3.0.4
@@ -100,6 +129,20 @@ urllib3==1.23
 virtualenv==16.0.0
 Werkzeug==0.14.1
 ```
+
+### Configure and Deploy application
+
+Created the server configuration file under /etc/apache2/sites-available/<filename>.conf
+Created the wsgi file on the app root folder (cloned from github)
+Setup the database creating tables and schemas, running the database_setup.py and gamerecords.py
+Setup Google credentials
+    
+### Running the application
+
+>Restart the server and run the app
+
+    $ sudo service apache2 restart
+    $ python __init__.py
 
 ### Using the application
 
