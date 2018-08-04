@@ -43,7 +43,7 @@ The following instructions will get access to the server instance as a user with
         
     $ sudo service ssh restart
 
-> Configure local timezone
+> Configured local timezone
 
     $ sudo dpkg-reconfigure tzdat
     
@@ -56,7 +56,27 @@ The following instructions will get access to the server instance as a user with
     $ sudo ufw default allow 2200/tcp
     $ sudo ufw default allow 80/tcp
     $ sudo ufw default allow 123/udp
+    $ sudo ufw deny 22
     $ sudo ufw enable
+
+>Checked running
+    
+    $ sudo ufw status
+    
+Result:
+
+```
+To                         Action      From
+--                         ------      ----
+22                         DENY        Anywhere
+2200/tcp                   ALLOW       Anywhere
+80/tcp                     ALLOW       Anywhere
+123/udp                    ALLOW       Anywhere
+22 (v6)                    DENY        Anywhere (v6)
+2200/tcp (v6)              ALLOW       Anywhere (v6)
+80/tcp (v6)                ALLOW       Anywhere (v6)
+123/udp (v6)               ALLOW       Anywhere (v6)
+```
 
 > Created user *grader* with super user permissions.
 
